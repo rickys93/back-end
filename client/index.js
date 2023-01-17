@@ -20,9 +20,6 @@ async function callTheHerd() {
             tr.appendChild(td)
         }
         herd.appendChild(tr)
-
-        
-        
     })
 
 }
