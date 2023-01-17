@@ -3,8 +3,8 @@
 const express = require("express"); // access to express library
 const cors = require("cors")
 
-const {goats, nextId} = require("./goats")
-const logger = require("./logger")
+let {goats, nextId} = require("./goats")
+const logger = require("./logger");
 
 const app = express(); // make very basic server using express
 
@@ -12,8 +12,9 @@ const app = express(); // make very basic server using express
 
 // req -> [cors (add header to response)] -> [API] -> response
 // req -> [auth (check the req headers for a key)] -> [API] -> response
-app.use(cors())
-app.use(logger)
+app.use(express.json()) // Layer to read the body of POSTs
+app.use(cors()) // Layer to add CORS headers
+app.use(logger) // Layer to log access
 
 // ENDPOINTS
 
@@ -38,10 +39,10 @@ app.get("/goats", (request, response) => {
 // get goat data for certain id
 app.get("/goats/:id", (request, response) => {
     const id = request.params["id"];
-
+    
     // filter through the goat list and find the correct id
     const goat = goats.filter(g => g["id"] == id)[0];
-
+    
     if (goat) {
         response.json(goat);
     } else {
@@ -51,5 +52,40 @@ app.get("/goats/:id", (request, response) => {
     }
 })
 
+
+// Get goat data
+app.post("/goats", (request, response) => {
+
+    const newGoat = request.body
+    nextId = goats.length + 1
+    newGoat["id"] = nextId
+
+    goats.push(newGoat)
+    
+    response.status(201).json(newGoat)
+
+    console.log(goats)
+})
+
+// Get goat data
+app.delete("/goats/:id", (request, response) => {
+    const id = request.params["id"]
+    console.log(id)
+    console.log(goats)
+    const exists = goats.filter(g => g["id"] == id).length == 1;
+
+    if (exists) {
+        goats = goats.filter(g => g["id"] != id)
+        response.status(200).json({
+            "message":`Goat ${id} deleted.`
+        })
+    } else {
+        response.status(404).json({
+            "message":`Goat not found at id: ${id}`
+        })
+    }
+    console.log(goats)
+    
+})
 
 module.exports = app; // makes the server available to other files

@@ -14,7 +14,8 @@ async function callTheHerd() {
     data.forEach(goat => {
         const tr = document.createElement("tr")
         const valueArray = []
-        for (key in goat) {
+        let goatKeys = ['id', 'name', 'age', 'sex', 'favouriteColour']
+        for (key of goatKeys) {
             const td = document.createElement("td")
             td.textContent = goat[key]
             tr.appendChild(td)
