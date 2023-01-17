@@ -70,8 +70,7 @@ app.post("/goats", (request, response) => {
 // Get goat data
 app.delete("/goats/:id", (request, response) => {
     const id = request.params["id"]
-    console.log(id)
-    console.log(goats)
+
     const exists = goats.filter(g => g["id"] == id).length == 1;
 
     if (exists) {
@@ -84,7 +83,6 @@ app.delete("/goats/:id", (request, response) => {
             "message":`Goat not found at id: ${id}`
         })
     }
-    console.log(goats)
     
 })
 
