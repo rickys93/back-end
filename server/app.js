@@ -1,5 +1,6 @@
 // describes the server/API
 
+const e = require("express");
 const express = require("express"); // access to express library
 
 const {goats, nextId} = require("./goats")
@@ -15,7 +16,13 @@ app.get("/", (request, response) => {
 
 // Get goat data
 app.get("/goats", (request, response) => {
-    response.json(goats)
+    const {maxAge} = request.query
+
+    if (maxAge) {
+        response.json(goats.filter(g => g["age"] <= maxAge))
+    } else {
+        response.json(goats)
+    }
 })
 
 app.get("/goats/:id", (request, response) => {
@@ -31,7 +38,6 @@ app.get("/goats/:id", (request, response) => {
             "message":`Goat not found at id: ${id}`
         })
     }
-
 })
 
 
