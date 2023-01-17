@@ -19,8 +19,8 @@ From the `./server` folder, run `npm run start`
 
 ## Notes
 
-Front-end development: building stuff the user interacts with
-Back-end development: building stuff the other code interacts with
+- Front-end development: building stuff the user interacts with
+- Back-end development: building stuff the other code interacts with
 
-Client: makes requests
-Sever: listens for and responds to requests
+- Client: makes requests
+- Server: listens for and responds to requests
