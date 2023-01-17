@@ -53,7 +53,7 @@ app.get("/goats/:id", (request, response) => {
 })
 
 
-// Get goat data
+// Add a new goat
 app.post("/goats", (request, response) => {
 
     const newGoat = request.body
@@ -85,5 +85,25 @@ app.delete("/goats/:id", (request, response) => {
     }
     
 })
+
+// Get goat data
+app.put("/goats/:id", (request, response) => {
+    const id = request.params["id"]
+
+    const updatedGoat = request.body
+    let goat = goats.filter(g => g["id"] == id)[0]
+
+    for (key in updatedGoat) {
+        goat[key] = updatedGoat[key]
+    }
+    goats[id] = goat
+
+    response.status(200).json({
+        goat
+    })
+})
+
+    
+
 
 module.exports = app; // makes the server available to other files

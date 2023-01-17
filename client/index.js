@@ -1,9 +1,11 @@
 const herd = document.getElementById("herd");
 
+const api_base = "http://localhost:3000"
+
 async function callTheHerd() {
 
     // Request all the goats from the API
-    const res = await fetch("http://localhost:3000/goats");
+    const res = await fetch(api_base + "/goats");
 
     // Extracting the JSON data from the response
     const data = await res.json();
@@ -20,6 +22,7 @@ function addGoatToHTML(goat) {
     const tr = document.createElement("tr");
     let goatKeys = ['id', 'name', 'age', 'sex', 'favouriteColour'];
     for (key of goatKeys) {
+        
         const td = document.createElement("td");
         td.textContent = goat[key];
         td.id = key
@@ -28,6 +31,11 @@ function addGoatToHTML(goat) {
         }
         tr.appendChild(td);
     }
+    const option = document.createElement("option")
+    option.value = goat["id"]
+    option.textContent = goat["id"]
+    document.getElementById("form-id").appendChild(option)
+
     const td = document.createElement("td");
     const deleteButton = document.createElement("button")
     td.appendChild(deleteButton)
@@ -54,7 +62,7 @@ async function deleteGoatFromDatabase(id) {
             'Content-Type': 'application/json'
           }
     }
-    const res = await fetch(`http://localhost:3000/goats/${id}`, options)
+    const res = await fetch(api_base + `/goats/${id}`, options)
     if (await res.status != 200) {
         alert("Attempt to delete goat failed!")
     } else {
@@ -74,7 +82,7 @@ async function addGoat(goat) {
           }
     }
 
-    const res = await fetch("http://localhost:3000/goats", options)
+    const res = await fetch(api_base + "/goats", options)
     const data = await res.json()
     if (await res.status != 201) {
         alert("Attempt to add goat failed")
@@ -83,7 +91,42 @@ async function addGoat(goat) {
     return await data
 }
 
-document.querySelector("form").addEventListener("submit", (e) => {
+async function updateGoat(goat) {
+    const id = goat["id"]
+    delete goat.id
+
+    const options = {
+        method:"PUT",
+        body: JSON.stringify(goat),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+    }
+    console.log(options)
+    const endPoint = api_base + "/goats/" + id
+    console.log(endPoint)
+
+    const res = await fetch(endPoint, options)
+
+}
+
+function updateGoatInHtml(goat) {
+    const tr = document.createElement("tr");
+    let goatKeys = ['id', 'name', 'age', 'sex', 'favouriteColour'];
+    for (key of goatKeys) {
+        
+        const td = document.createElement("td");
+        td.textContent = goat[key];
+        td.id = key
+        if (key === "favouriteColour") {
+            td.style.backgroundColor = goat[key];
+        }
+        tr.appendChild(td);
+    }
+}
+
+document.querySelector("#add-goat-form").addEventListener("submit", (e) => {
     e.preventDefault()
 
     const goat = {
@@ -95,6 +138,19 @@ document.querySelector("form").addEventListener("submit", (e) => {
 
     goat = addGoat(goat)
     addGoatToHTML(goat)
+})
+
+document.querySelector("#update-goat-form").addEventListener("submit", (e) => {
+    e.preventDefault()
+
+    const goat = {
+        id: e.target.id.value,
+        age: e.target.age.value,
+        favouriteColour: e.target.colour.value
+    };
+    console.log(goat)
+
+    updateGoat(goat)
 })
 
 callTheHerd()
