@@ -24,4 +24,4 @@ const goats = [
 
 let nextId = 4
 
-module.exports = {goats, nextId}
+module.exports = { goats, nextId }
